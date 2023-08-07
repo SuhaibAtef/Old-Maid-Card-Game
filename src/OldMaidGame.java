@@ -10,6 +10,7 @@ public class OldMaidGame {
     public static int numberOfPlayers =-1;
     public boolean gameOver = false;
     Lock turnLock = new ReentrantLock();
+    PlayerController playerController;
     public OldMaidGame() {
         initializePlayers();
         initializeDeck();
@@ -24,12 +25,11 @@ public class OldMaidGame {
             input.next();
         }
         numberOfPlayers = input.nextInt();
+        playerController = new PlayerController(numberOfPlayers);
         for (int i = 0; i < numberOfPlayers; i++) {
-            players.add(new Player(i,turnLock));
+            players.add(new Player(i,turnLock,playerController));
         }
-        for (int i = 0; i < numberOfPlayers; i++) {
-            players.get(i).setNextPlayer(players.get((i+1)%numberOfPlayers));
-        }
+
         System.out.println("Initialized All Players");
 
     }
@@ -73,8 +73,11 @@ public class OldMaidGame {
     }
 
     public void start() {
-        players.forEach(player -> player.start());
-
+        players.forEach(Thread::start);
+        System.out.println("[MAIN] Game Started");
+        while(playerController.syncSet.size()!=numberOfPlayers){
+        }
+        System.out.println("[MAIN] Game Ended");
     }
 
 }

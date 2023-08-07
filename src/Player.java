@@ -6,23 +6,20 @@ import java.util.concurrent.locks.Lock;
 import java.util.stream.Collectors;
 
 public class Player extends Thread {
+    int turns = 4;
     Random random = new Random();
     public static int playerCount = 0;
     int id;
-    Lock turnLock;
+    final Lock turnLock;
     Player nextPlayer;
-    boolean isDone = false;
     List<Card> cards = new ArrayList<>();
-    public Player(int id, Lock turnLock){
+    PlayerController playerController;
+    boolean gameOver = false;
+    public Player(int id, Lock turnLock,PlayerController playerController){
         this.id = id;
         this.turnLock = turnLock;
+        this.playerController = playerController;
         System.out.println("Initializing Player No." + (this.id+1));
-    }
-    public void setNextPlayer(Player nextPlayer){
-        this.nextPlayer = nextPlayer;
-    }
-    public Player getNextPlayer(){
-        return this.nextPlayer;
     }
     public void addCards(Card ...cardsToAdd) {
         for (Card card : cardsToAdd) {
@@ -58,13 +55,20 @@ public class Player extends Thread {
         }
     }
     private synchronized void playGame(){
-        // get Cards
-        System.out.println("Player No." + (this.id+1) + " has " + cards.size() + " cards");
-        if(cards.isEmpty()){
-            System.out.println("Player No." + (this.id+1) + " is done");
-        }else{
-            System.out.println("Player No." + (this.id+1) + " Lost the game");
+        while (!gameOver) {
+            if(playerController.getNextTurn()==this.id){
+                if(turns==0){
+                    gameOver=true;
+                    System.out.println("Player No." + (this.id+1) + " is done");
+                    break;
+                }else {
+                    turns--;
+                    System.out.println("Player No." + (this.id+1) + " took turn");
+                    playerController.nextTurn();
+                }
+            }
         }
+        playerController.syncSet.add(this.id);
     }
     public int getCardsLength(){
         return cards.size();
@@ -73,9 +77,7 @@ public class Player extends Thread {
     public Card takeCard(int index){
         return cards.remove(index);
     }
-    private void takeTurn(){
-        playerCount=(playerCount+1)%OldMaidGame.numberOfPlayers;
-    }
+
     @Override
     public void run() {
         System.out.println("Initialized Player No." + (this.id+1) + " in thread " + Thread.currentThread().getName());
