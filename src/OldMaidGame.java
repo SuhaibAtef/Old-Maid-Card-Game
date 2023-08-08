@@ -6,9 +6,8 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class OldMaidGame {
     static Deck deck;
-    List<Player> players = new ArrayList<Player>();
+    List<Player> players = new ArrayList<>();
     public static int numberOfPlayers =-1;
-    public boolean gameOver = false;
     Lock turnLock = new ReentrantLock();
     PlayerController playerController;
     public OldMaidGame() {
@@ -76,6 +75,7 @@ public class OldMaidGame {
         players.forEach(Thread::start);
         System.out.println("[MAIN] Game Started");
         while(playerController.syncSet.size()!=numberOfPlayers){
+
         }
         System.out.println("[MAIN] Game Ended");
     }

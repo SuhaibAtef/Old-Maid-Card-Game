@@ -1,4 +1,3 @@
-import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -6,15 +5,12 @@ import java.util.concurrent.locks.Lock;
 import java.util.stream.Collectors;
 
 public class Player extends Thread {
-    int turns = 4;
     Random random = new Random();
-    public static int playerCount = 0;
     int id;
     final Lock turnLock;
-    Player nextPlayer;
     List<Card> cards = new ArrayList<>();
     PlayerController playerController;
-    boolean gameOver = false;
+
     public Player(int id, Lock turnLock,PlayerController playerController){
         this.id = id;
         this.turnLock = turnLock;
@@ -44,9 +40,9 @@ public class Player extends Thread {
     }
 
     private void disposePairs(Pair<Card,Card> pair){
-        System.out.println("Disposing Card: " + pair.getLeft().toString() + "\nDisposing Card: " + pair.getRight().toString());
-        cards.remove(pair.getLeft());
-        cards.remove(pair.getRight());
+        System.out.println("Disposing Card: " + pair.left().toString() + "\nDisposing Card: " + pair.right().toString());
+        cards.remove(pair.left());
+        cards.remove(pair.right());
 
     }
     private void disposingCards(){

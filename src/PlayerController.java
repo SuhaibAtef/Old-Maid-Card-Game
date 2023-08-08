@@ -3,7 +3,6 @@ import java.util.*;
 public class PlayerController {
     int playersCount;
     public  volatile int playerTurn = 0;
-
     List<Player> players;
 
     public volatile Set<Integer> syncSet = Collections.synchronizedSet(new HashSet<>());
