@@ -35,7 +35,7 @@ public class Player extends Thread {
                         && firstCard.cardColor == secondCard.cardColor
                         && firstCard.cardValue == secondCard.cardValue
                 )).map(secondCard -> new Pair<>(firstCard, secondCard))).distinct()
-                .collect(Collectors.toList());;
+                .collect(Collectors.toList());
         return disposedCards;
     }
 
