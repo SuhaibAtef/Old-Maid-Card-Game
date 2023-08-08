@@ -59,15 +59,6 @@ public class Player extends Thread {
     private synchronized void playGame(){
         while (true) {
             if(playerController.getNextTurn()==this.id){
-//                if(turns==0){
-//                    gameOver=true;
-//                    System.out.println("Player No." + (this.id+1) + " is done");
-//                    break;
-//                }else {
-//                    turns--;
-//                    System.out.println("Player No." + (this.id+1) + " took turn");
-//                    playerController.nextTurn();
-//                }
                 turnLock.lock();
                 if(cards.isEmpty()){
                     System.out.println("Player No." + (this.id+1) + " is done");
@@ -82,7 +73,7 @@ public class Player extends Thread {
                     playerController.getNextTurn();
                     Player nextPlayer = playerController.getPlayer(playerController.getNextTurn());
                     if(nextPlayer==this){
-                        System.out.println("Player No." + (this.id+1) + " is lost");
+                        System.out.println("Player No." + (this.id+1) + " is the old maid");
                         playerController.syncSet.add(this.id);
                         turnLock.unlock();
                         break;
