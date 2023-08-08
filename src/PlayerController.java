@@ -1,14 +1,15 @@
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class PlayerController {
     int playersCount;
     public  volatile int playerTurn = 0;
 
-    public Set<Integer> syncSet = Collections.synchronizedSet(new HashSet<>());
-    PlayerController(int players){
+    List<Player> players;
+
+    public volatile Set<Integer> syncSet = Collections.synchronizedSet(new HashSet<>());
+    PlayerController(int players, List<Player> playersList){
         this.playersCount = players;
+        this.players = playersList;
     }
     public synchronized int getNextTurn(){
         while (syncSet.contains(playerTurn)) {
@@ -16,7 +17,9 @@ public class PlayerController {
         }
         return playerTurn;
     }
-
+    public Player getPlayer(int player){
+        return players.get(player);
+    }
 
     public void nextTurn() {
         playerTurn = (playerTurn + 1)%playersCount;

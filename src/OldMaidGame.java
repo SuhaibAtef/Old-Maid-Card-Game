@@ -25,7 +25,7 @@ public class OldMaidGame {
             input.next();
         }
         numberOfPlayers = input.nextInt();
-        playerController = new PlayerController(numberOfPlayers);
+        playerController = new PlayerController(numberOfPlayers,players);
         for (int i = 0; i < numberOfPlayers; i++) {
             players.add(new Player(i,turnLock,playerController));
         }

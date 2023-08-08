@@ -3,4 +3,5 @@ public class GameLauncher {
         OldMaidGame game = new OldMaidGame();
         game.start();
     }
+
 }

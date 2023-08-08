@@ -29,6 +29,7 @@ public class Player extends Thread {
                 throw new IllegalArgumentException("Null card cannot be added to the deck.");
             }
         }
+        disposingCards();
     }
     private List<Pair> getDisposedCards(){
         // pair all cards that has the same color and value
@@ -52,23 +53,68 @@ public class Player extends Thread {
         if(!getDisposedCards().isEmpty()){
             System.out.println("Disposing Cards from Player No." + (this.id+1));
             getDisposedCards().forEach(this::disposePairs);
+            System.out.println("[Player No." + (this.id+1) + "] Cards left: " + cards.size());
         }
     }
     private synchronized void playGame(){
-        while (!gameOver) {
+        while (true) {
             if(playerController.getNextTurn()==this.id){
-                if(turns==0){
-                    gameOver=true;
+//                if(turns==0){
+//                    gameOver=true;
+//                    System.out.println("Player No." + (this.id+1) + " is done");
+//                    break;
+//                }else {
+//                    turns--;
+//                    System.out.println("Player No." + (this.id+1) + " took turn");
+//                    playerController.nextTurn();
+//                }
+                turnLock.lock();
+                if(cards.isEmpty()){
                     System.out.println("Player No." + (this.id+1) + " is done");
-                    break;
-                }else {
-                    turns--;
-                    System.out.println("Player No." + (this.id+1) + " took turn");
+                    playerController.syncSet.add(this.id);
                     playerController.nextTurn();
+                    turnLock.unlock();
+                    break;
                 }
+                playerController.nextTurn();
+                disposingCards();
+                if(!cards.isEmpty()){
+                    playerController.getNextTurn();
+                    Player nextPlayer = playerController.getPlayer(playerController.getNextTurn());
+                    if(nextPlayer==this){
+                        System.out.println("Player No." + (this.id+1) + " is lost");
+                        playerController.syncSet.add(this.id);
+                        turnLock.unlock();
+                        break;
+                    }
+                    int lengthCards = nextPlayer.getCardsLength();
+                    if (lengthCards == 0) {
+                        playerController.getNextTurn();
+                        lengthCards = nextPlayer.getCardsLength();
+                    }
+                    System.out.println("Player No." + (this.id+1) + " takes card from Player No." + (nextPlayer.id+1) +" "+ nextPlayer.getCardsLength());
+                    int cardIndex = random.nextInt(lengthCards);
+                    Card cardTaken = nextPlayer.takeCard(cardIndex);
+                    System.out.println("Player No." + (this.id+1) + " took Card: " + cardTaken.toString() + " from Player No." + (nextPlayer.id+1));
+                    cards.add(cardTaken);
+                    disposingCards();
+                    if(cards.isEmpty()){
+                        System.out.println("Player No." + (this.id+1) + " is done");
+                        playerController.syncSet.add(this.id);
+                        turnLock.unlock();
+                        break;
+                    }
+                }else{
+                    System.out.println("Player No." + (this.id+1) + " is done");
+                    playerController.syncSet.add(this.id);
+                    turnLock.unlock();
+                    break;
+                }
+
+                turnLock.unlock();
             }
         }
-        playerController.syncSet.add(this.id);
+
     }
     public int getCardsLength(){
         return cards.size();
