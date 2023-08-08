@@ -15,12 +15,12 @@ public class Deck {
 
     }
 
-    public int numberOfCards() {
-        return cards.size();
-    }
-
     public static Deck getInstance() {
         return InstanceHolder.instance;
+    }
+
+    public int numberOfCards() {
+        return cards.size();
     }
 
     public void shuffle() {
@@ -37,8 +37,8 @@ public class Deck {
         return cards.remove(cards.size() - 1);
     }
 
-    public Card [] drawAmount(int amount) {
-        Card [] cardsDrawn = cards.subList(0, amount).toArray(new Card[amount]);
+    public Card[] drawAmount(int amount) {
+        Card[] cardsDrawn = cards.subList(0, amount).toArray(new Card[amount]);
         cards.subList(0, amount).clear();
         return cardsDrawn;
     }

@@ -2,10 +2,11 @@ public class Card {
     CardType cardType;
     CardValue cardValue;
     CardColor cardColor;
+
     Card(CardType cardType, CardValue cardValue) {
         this.cardType = cardType;
         this.cardValue = cardValue;
-        switch (cardType){
+        switch (cardType) {
             case CLUBS:
             case SPADES:
                 this.cardColor = CardColor.BLACK;
@@ -33,6 +34,7 @@ public class Card {
         BLACK,
         JOKER
     }
+
     enum CardValue {
         ACE,
         TWO,
@@ -49,6 +51,7 @@ public class Card {
         KING,
         JOkER
     }
+
     enum CardType {
         CLUBS,
         DIAMONDS,

@@ -1,4 +1,5 @@
 import org.junit.jupiter.api.RepeatedTest;
+
 import java.io.ByteArrayInputStream;
 
 class OldMaidGameTest {
